@@ -10,9 +10,9 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    vector<string> words;
-    set <string> uniqueWords;
-    string next_line;  // Each data line
+    list<string> words;
+    set<string> uniqueWords;
+    string next_line; // Each data line
     ifstream in(argv[1]);
     string fileName = argv[1];
     while (getline(in, next_line))
@@ -36,31 +36,46 @@ int main(int argc, char *argv[])
     cout << "Number of words: " << words.size() << endl;
     cout << "Number of unique words: " << uniqueWords.size() << endl;
     ofstream file;
-    file.open( fileName + "_set.txt", ios::out);
-    for (set<string>::iterator it=uniqueWords.begin(); it!=uniqueWords.end(); it++){
+    file.open(fileName + "_set.txt", ios::out);
+    for (auto it = uniqueWords.begin(); it != uniqueWords.end(); it++)
+    {
         file << *it << endl;
     }
     file.close();
-    file.open( fileName + "_vector.txt", ios::out);
-    for (vector<string>::iterator it=words.begin(); it!=words.end(); it++){
+    file.open(fileName + "_vector.txt", ios::out);
+    for (auto it = words.begin(); it != words.end(); it++)
+    {
         file << *it << endl;
     }
     file.close();
 
-    map<string, vector<string>> wordsMap;
-    string last = "";
-    for (vector<string>::iterator it=words.begin(); it!=words.end(); it++) {
-    wordsMap[last].push_back(*it);
-    last = *it;
+    map<list<string>, vector<string>> wordsMap;
+    list<string> state;
+    int M = 2;
+    for (int i = 0; i < M; i++)
+    {
+        state.push_back("");
     }
 
-    file.open( fileName + "_map.txt", ios::out);
-    for (auto it=wordsMap.begin(); it!=wordsMap.end(); it++){
-        for (int i = 0; i < it->second.size(); i++){
-            file << i << ": ";
-            file << it->first << ", " << it->second.at(i) << endl;
-        }
+    for (list<string>::iterator it = words.begin(); it != words.end(); it++)
+    {
+        wordsMap[state].push_back(*it);
+        state.push_back(*it);
+        state.pop_front();
     }
-    file.close();
 
+    state.clear();
+    for (int i = 0; i < M; i++)
+    {
+        state.push_back("");
+    }
+    for (int i = 0; i < 100; i++)
+    {
+        int ind = rand() % wordsMap[state].size();
+        cout << wordsMap[state][ind] << " ";
+        state.push_back(wordsMap[state][ind]);
+        state.pop_front();
+    }
+    cout << endl;
+    return 0;
 }
