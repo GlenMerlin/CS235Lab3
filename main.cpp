@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 
     map<list<string>, vector<string>> wordsMap;
     list<string> state;
-    int M = 2;
+    int M = 3;
     for (int i = 0; i < M; i++)
     {
         state.push_back("");
